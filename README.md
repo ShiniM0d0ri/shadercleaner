@@ -9,7 +9,7 @@ A lightweight, automated Windows batch script to clear GPU shader caches (NVIDIA
 - **Safe:** Checks if Steam is running and closes it gracefully before cleaning.
 
 ## How to Use
-1. Download the `ShaderCleaner.bat` file from the [Releases](link-to-releases) page.
+1. Download the `ShaderCleaner.bat` file from the [Releases](https://github.com/ShiniM0d0ri/shadercleaner/releases/tag/0.0.1) page.
 2. Right-click the file and select **Run as Administrator** (Required to access system folders).
 3. Choose an option from the menu:
    - `[1] Clear ALL` (Recommended for troubleshooting)
