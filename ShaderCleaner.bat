@@ -1,11 +1,11 @@
 @echo off
 setlocal EnableDelayedExpansion
-title Universal Shader Cache Cleaner v1.0
+title Universal Shader Cache Cleaner v1.1
 color 0b
 
 :: ============================================================================
 ::  UNIVERSAL SHADER CACHE CLEANER
-::  Author: [Your GitHub Username]
+::  Author: ShiniM0d0ri
 ::  Description: Clears DirectX, NVIDIA, AMD, Intel, and Steam Shader Caches.
 ::  License: MIT
 :: ============================================================================
@@ -19,12 +19,12 @@ if %errorLevel% neq 0 (
     echo ============================================================================
     echo  ERROR: ADMINISTRATOR PRIVILEGES REQUIRED
     echo ============================================================================
-    echo.
-    echo  This script requires admin rights to access system folders (ProgramData/AppData).
-    echo.
+    echo(
+    echo  This script requires admin rights to access system folders ^(ProgramData/AppData^).
+    echo(
     echo  [ACTION REQUIRED]
     echo  Please right-click this file and select "Run as Administrator".
-    echo.
+    echo(
     echo ============================================================================
     pause
     exit
@@ -51,14 +51,14 @@ color 0b
 echo ============================================================================
 echo   UNIVERSAL SHADER CACHE CLEANER
 echo ============================================================================
-echo.
+echo(
 echo   Detected Steam Path: !STEAM_PATH!
-echo.
+echo(
 echo   [1] Clear ALL Shader Caches (Recommended)
 echo   [2] Clear GPU Caches Only (NVIDIA / AMD / INTEL / DX)
 echo   [3] Clear Steam Shader Cache Only
 echo   [4] Exit
-echo.
+echo(
 echo ============================================================================
 set /p choice="Select an option (1-4): "
 
@@ -88,25 +88,25 @@ goto FINISHED
 :: ============================================================================
 
 :CLOSE_STEAM
-echo.
+echo(
 echo ----------------------------------------------------------------------------
 echo  Checking Steam Process...
 echo ----------------------------------------------------------------------------
 tasklist /FI "IMAGENAME eq steam.exe" 2>NUL | find /I /N "steam.exe">NUL
 if "%ERRORLEVEL%"=="0" (
-    echo   ! Steam is running. Closing it now to prevent file locks...
+    echo   [INFO] Steam is running. Closing it now to prevent file locks...
     taskkill /F /IM steam.exe >nul 2>&1
     timeout /t 3 /nobreak >nul
-    echo   ! Steam closed.
+    echo   [OK] Steam closed.
 ) else (
-    echo   ! Steam is not running. Proceeding...
+    echo   [INFO] Steam is not running. Proceeding...
 )
 exit /b
 
 :CLEAN_GPU
-echo.
+echo(
 echo ----------------------------------------------------------------------------
-echo  Cleaning GPU & DirectX Caches...
+echo  Cleaning GPU ^& DirectX Caches...
 echo ----------------------------------------------------------------------------
 
 :: NVIDIA
@@ -130,38 +130,54 @@ call :DELETE_FOLDER "%LOCALAPPDATA%\DirectX Shader Cache" "Windows DirectX Shade
 exit /b
 
 :CLEAN_STEAM
-echo.
+echo(
 echo ----------------------------------------------------------------------------
 echo  Cleaning Steam Shader Cache...
 echo ----------------------------------------------------------------------------
-if defined STEAM_PATH (
-    if exist "!STEAM_PATH!\steamapps\shadercache" (
-        call :DELETE_FOLDER "!STEAM_PATH!\steamapps\shadercache" "Steam Shader Cache"
-    ) else (
-        echo   [SKIP] Steam Shader Cache folder not found (Clean).
-    )
-) else (
-    echo   [ERROR] Could not detect Steam path. Skipping Steam cleanup.
+
+if not defined STEAM_PATH (
+    echo   [ERROR] Steam path not detected. Skipping.
+    exit /b
 )
+
+set "STEAM_SHADER=%STEAM_PATH%\steamapps\shadercache"
+
+if exist "%STEAM_SHADER%" (
+    call :DELETE_FOLDER "%STEAM_SHADER%" "Steam Shader Cache"
+) else (
+    echo   [SKIP] Steam Shader Cache - Not Found
+)
+
 exit /b
 
 :DELETE_FOLDER
-:: Usage: call :DELETE_FOLDER "Path" "NameForLog"
 if exist "%~1" (
-    echo   [CLEANING] %~2...
+    echo   [CLEANING] %~2
     rmdir /s /q "%~1" >nul 2>&1
-    echo      Done.
+    echo     + Removed
+) else (
+    echo   [SKIP] %~2 - Not Found
 )
 exit /b
 
 :FINISHED
-echo.
+echo(
 echo ============================================================================
-echo  CLEANUP COMPLETE!
+echo  CLEANUP COMPLETE
 echo ============================================================================
-echo.
-echo  Note: Your next game launch may take longer as shaders rebuild.
-echo        Stuttering during the first few minutes of gameplay is normal.
-echo.
-pause
-goto MAIN_MENU
+echo(
+echo  ✔ Shader cache cleanup finished successfully.
+echo(
+echo  ℹ Your next game launch may take longer as shaders rebuild.
+echo    Minor stuttering during first gameplay is normal.
+echo(
+echo ============================================================================
+echo(
+echo  [1] Return to Main Menu
+echo  [2] Exit
+echo(
+set /p endchoice="Choose an option (1-2): "
+
+if "%endchoice%"=="1" goto MAIN_MENU
+if "%endchoice%"=="2" exit
+goto FINISHED
